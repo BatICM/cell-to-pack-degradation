@@ -1,0 +1,153 @@
+# ============================================================
+# Configuration for ESSL2 cell-to-pack evaluation
+# ============================================================
+
+project:
+  name: cell-to-pack-degradation
+  experiment_name: essl2_joint_soc_soh
+  description: Physics-regularized joint SOC/SOH estimation and pack-level capacity evaluation for ESSL2.
+
+dataset:
+  name: ESSL2
+  chemistry: LFP
+  nominal_capacity_ah: 105.0
+  pack_structure: 15
+  pack_structure_description: 15s
+
+  cell_data_paths:
+    - "data/raw/ESSL2/cells/Cell#20.pkl"
+    - "data/raw/ESSL2/cells/Cell#17.pkl"
+    - "data/raw/ESSL2/cells/Cell#14.pkl"
+    - "data/raw/ESSL2/cells/Cell#11.pkl"
+
+  pack_data_path: "data/raw/ESSL2/pack/Pack#2.pkl"
+
+columns:
+  time: "time (s)"
+  current: "current (A)"
+  charge_capacity: "charge_capacity (Ah)"
+  soc: "SOC"
+
+  cell_voltage: "voltage (V)"
+  cell_temperature: "temperature (℃)"
+
+  pack_voltage: "Vpack"
+
+  pack_cell_voltage_regex: "^V\\d+$"
+  pack_cell_temperature_prefix: "T"
+
+sampling:
+  min_length: 50
+
+  voltage:
+    min_v: 3.34
+    max_v: 3.42
+    step_v: 0.001
+    round_digits: 4
+
+  soc:
+    window_size: 30
+    num_samples: 20
+
+  soh:
+    window_size: 70
+    num_samples_mode: auto_from_voltage_range
+
+split:
+  test_size: 0.20
+  random_state: 42
+  split_unit: cycle
+
+dataloader:
+  batch_size: 32
+  num_workers: 0
+  shuffle_train: true
+  shuffle_test: false
+
+model:
+  name: DualCNNLSTMModel
+
+  soh:
+    input_channels: 4
+    seq_length: 70
+
+  soc:
+    input_channels: 2
+    seq_length: 30
+
+  hidden_dim: 8
+  aux_dim: 2
+
+training:
+  seed: 42
+  device: auto
+  cuda_device: 0
+
+  num_epochs: 300
+  learning_rate: 0.01
+  weight_decay: 1.0e-5
+
+  optimizer: Adam
+
+  scheduler:
+    name: ReduceLROnPlateau
+    mode: min
+    factor: 0.5
+    patience: 5
+    min_lr: 1.0e-5
+    eps: 1.0e-8
+
+  early_stopping:
+    enabled: true
+    patience: 20
+
+loss:
+  criterion: MSELoss
+
+  weights:
+    soh: 0.45
+    soc: 0.35
+    soh_soc: 0.10
+    dr: 0.10
+
+pack_inference:
+  batch_size: 100
+  require_full_batch: true
+
+  current_filter:
+    enabled: true
+    min_current_a: 4.0
+    min_c_rate: null
+
+  voltage_filter:
+    use_pack_voltage: true
+    min_v: 3.34
+    max_v: 3.42
+
+  abnormal_voltage_jump_filter:
+    enabled: false
+    max_cell_voltage_jump_v: 0.02
+
+  capacity_estimation:
+    method: boundary_min_charge_discharge
+    outlier_filter: iqr
+    soc_sample_index_for_state_space_plot: 19
+
+output:
+  checkpoint_dir: "outputs/checkpoints"
+  prediction_dir: "outputs/predictions"
+  figure_dir: "outputs/figures"
+  table_dir: "outputs/tables"
+
+  best_model_name: "best_dual_cnn_lstm_model_essl2.pth"
+
+  cell_prediction_file: "outputs/predictions/essl2_cell_predictions.npz"
+  pack_prediction_file: "outputs/predictions/essl2_pack_predictions.npz"
+  pack_capacity_table: "outputs/tables/essl2_pack_estimation.csv"
+
+plot:
+  font_family: Arial
+  dpi: 300
+
+  save_figures: true
+  show_figures: false
