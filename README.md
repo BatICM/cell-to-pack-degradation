@@ -8,14 +8,14 @@ The repository includes the ESSL1 dataset as a lightweight example. The complete
 
 All analyses are conducted in Python. Required packages are listed in `requirements.txt`.
 
-The code has been tested with Python 3.8. No non-standard hardware is required for the ESSL1 example. GPU acceleration can be used for model training but is not required for setup checking or pack-level evaluation.
+The code has been tested with Python 3.7.12. No non-standard hardware is required for the ESSL1 example. GPU acceleration can be used for model training but is not required for setup checking or pack-level evaluation.
 
 ## II - Installation
 
 Create and activate a Python environment:
 
 ```bash
-conda create -n ctp_deg python=3.8
+conda create -n ctp_deg python=3.7
 conda activate ctp_deg
 pip install -r requirements.txt
 ```
