@@ -60,7 +60,7 @@ columns:
 
   pack_voltage: "Vpack"
 
-  # ESSH1 pack columns are V_1, V_2, ..., V_416 and T_1, T_2, ..., T_416.
+  # ESSH1 pack columns are V1, V2, ..., V416 and T1, T2, ..., T416.
   pack_cell_voltage_regex: "^V\\d+$"
   pack_cell_temperature_prefix: "T"
 
