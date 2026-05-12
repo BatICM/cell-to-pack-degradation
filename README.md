@@ -2,7 +2,7 @@
 
 Data and code to reproduce the analyses in the manuscript **"State-space geometry drives degradation amplification in battery packs"**.
 
-The repository includes the ESSL1 dataset as a lightweight example. The complete datasets will be deposited in Zenodo.
+The repository includes the ESSL1 dataset as a lightweight example. The complete datasets will be available at Zenodo: 10.5281/zenodo.20132842.
 
 ## I - System requirements
 
