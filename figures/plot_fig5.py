@@ -150,7 +150,7 @@ ax.set_ylabel("")
 plt.show()
 # In[] Fig5a_4
 
-df = pd.read_excel(SOURCE_XLSX, sheet_name="Fig5a_1")
+df = pd.read_excel(SOURCE_XLSX, sheet_name="Fig5a_4")
 
 df["Bin"] = pd.to_numeric(df["Bin"], errors="coerce")
 df["Mean absolute SHAP"] = pd.to_numeric(df["Mean absolute SHAP"], errors="coerce")
