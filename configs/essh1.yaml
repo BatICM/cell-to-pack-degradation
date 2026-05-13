@@ -38,9 +38,9 @@ dataset:
 labels:
   real_pack_soh_source: external_pack_capacity
 
-  pack_capacity_path: "data/raw/ESSH1/labels/pack_capacity_0725.csv"
-  cell_capacity_path: "data/raw/ESSH1/labels/capacity_matrix_0725.csv"
-  soc_matrix_path: "data/raw/ESSH1/labels/SOC_matrix_0725.csv"
+  pack_capacity_path: "data/raw/ESSH1/labels/pack_capacity#1.csv"
+  cell_capacity_path: "data/raw/ESSH1/labels/capacity_matrix#1.csv"
+  soc_matrix_path: "data/raw/ESSH1/labels/SOC_matrix#1.csv"
 
   pack_capacity_column_start: 1
   capacity_to_soh_divisor: 3.02
