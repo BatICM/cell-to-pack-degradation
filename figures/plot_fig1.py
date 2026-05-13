@@ -16,7 +16,7 @@ rcParams.update({
 })
 # In[]Fig1a
 BASE_DIR = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-SOURCE_XLSX = BASE_DIR / "Fig1_source_data.xlsx"
+SOURCE_XLSX = BBASE_DIR.parent / "source_data" / "Fig1_source_data.xlsx"
 
 dataset_order = ["ESSL1", "ESSL2", "PBSL1", "ESSH1"]
 title_map = {
