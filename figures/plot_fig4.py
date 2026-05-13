@@ -20,7 +20,7 @@ rcParams.update({
 
 BASE_DIR = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
 
-SOURCE_XLSX = BASE_DIR / "Fig4_source_data.xlsx"
+SOURCE_XLSX = BBASE_DIR.parent / "source_data" / "Fig4_source_data.xlsx"
 soh_labels = ["100-95", "95-90", "90-85", "85-80", "80-75"]
 
 df = pd.read_excel(SOURCE_XLSX, sheet_name="Fig4a")
@@ -322,7 +322,7 @@ ax.spines["right"].set_visible(False)
 ax.grid(True, alpha=0.3, linestyle="-", linewidth=0.5)
 
 plt.show()
-# In[]
+# In[] Fig4e
 
 df = pd.read_excel(SOURCE_XLSX, sheet_name="Fig4e")
 
@@ -632,89 +632,7 @@ ax.tick_params(axis="y", labelsize=10)
 
 plt.tight_layout()
 plt.show()
-# In[]Fig4(f)
 
-new_order = [
-    "SOH_Error_se", "SOH_Error_do", "SOH_Error_detasoc", "SOH_Error_dr", "SOH_Error_to",
-    "SOC_Error_se", "SOC_Error_do", "SOC_Error_detasoc", "SOC_Error_dr", "SOC_Error_to",
-    "General_Error_se", "General_Error_do", "General_Error_detasoc", "General_Error_dr", "General_Error_to",
-]
-
-df1_clean = pd.read_excel(SOURCE_XLSX, sheet_name="Fig4f")
-df1_clean = df1_clean.reindex(columns=new_order)
-
-fig, ax = plt.subplots(1, 1, figsize=(9, 2.4))
-
-color = [
-    "#D66056", "#CDC7C9", "#ADBBC8", "#7B8BBC", "#424EAD",
-    "#D66056", "#CDC7C9", "#ADBBC8", "#7B8BBC", "#424EAD",
-    "#D66056", "#CDC7C9", "#ADBBC8", "#7B8BBC", "#424EAD",
-]
-
-ax = sns.violinplot(
-    data=df1_clean,
-    inner=None,
-    linewidth=0,
-    palette=color,
-    ax=ax
-)
-
-formatter = FormatStrFormatter("%.1f")
-ax.yaxis.set_major_formatter(formatter)
-
-violins = [
-    child for child in ax.get_children()
-    if isinstance(child, matplotlib.collections.PolyCollection)
-]
-
-for i, column in enumerate(df1_clean.columns):
-    values = df1_clean[column].dropna()
-
-    if len(values) > 0 and i < len(violins):
-        mae = np.mean(values)
-        std_dev = np.std(values)
-
-        path = violins[i].get_paths()[0]
-        verts = path.vertices
-
-        mae_verts = verts[np.abs(verts[:, 1] - mae) < 0.1]
-        lower_verts = verts[np.abs(verts[:, 1] - (mae - std_dev)) < 0.1]
-        upper_verts = verts[np.abs(verts[:, 1] - (mae + std_dev)) < 0.1]
-
-        violin_width_mae = mae_verts[:, 0].max() - mae_verts[:, 0].min() if len(mae_verts) > 0 else 0.8
-        violin_width_lower = lower_verts[:, 0].max() - lower_verts[:, 0].min() if len(lower_verts) > 0 else 0.8
-        violin_width_upper = upper_verts[:, 0].max() - upper_verts[:, 0].min() if len(upper_verts) > 0 else 0.8
-
-        ax.plot(
-            [i - violin_width_mae / 2, i + violin_width_mae / 2],
-            [mae, mae],
-            "k-",
-            lw=1
-        )
-
-        ax.plot(
-            [i - violin_width_lower / 2, i + violin_width_lower / 2],
-            [mae - std_dev, mae - std_dev],
-            "r-",
-            lw=1
-        )
-
-        ax.plot(
-            [i - violin_width_upper / 2, i + violin_width_upper / 2],
-            [mae + std_dev, mae + std_dev],
-            "r-",
-            lw=1
-        )
-
-ax.set_ylabel("Absolute error (%)", fontsize=12)
-ax.set_xlabel("")
-ax.set_xticks(range(len(df1_clean.columns)))
-ax.set_xticklabels([""] * len(df1_clean.columns))
-
-ax.spines["top"].set_visible(False)
-ax.spines["right"].set_visible(False)
-ax.grid(True, alpha=0.3, linestyle="-", linewidth=0.5)
-ax.tick_params(axis="y", labelsize=10)
 
 plt.tight_layout()
 plt.show()
