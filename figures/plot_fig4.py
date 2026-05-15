@@ -20,7 +20,7 @@ rcParams.update({
 
 BASE_DIR = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
 
-SOURCE_XLSX = BBASE_DIR.parent / "source_data" / "Fig4_source_data.xlsx"
+SOURCE_XLSX = BASE_DIR.parent / "source_data" / "Fig4_source_data.xlsx"
 soh_labels = ["100-95", "95-90", "90-85", "85-80", "80-75"]
 
 df = pd.read_excel(SOURCE_XLSX, sheet_name="Fig4a")
