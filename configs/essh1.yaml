@@ -1,0 +1,250 @@
+# ============================================================
+# Configuration for ESSH1 cell-to-pack evaluation
+# ============================================================
+
+project:
+  name: cell-to-pack-degradation
+  experiment_name: essh1_joint_soc_soh
+  description: Physics-regularized joint SOC/SOH estimation and pack-level capacity evaluation for ESSH1.
+
+# ============================================================
+# Dataset settings
+# ============================================================
+
+dataset:
+  name: ESSH1
+  chemistry: LFP
+  nominal_capacity_ah: 302.0
+  pack_structure: 416
+  pack_structure_description: 416s
+
+  cell_data_paths:
+    - "data/raw/ESSH1/cells/Cell#31.pkl"
+    - "data/raw/ESSH1/cells/Cell#32.pkl"
+    - "data/raw/ESSH1/cells/Cell#33.pkl"
+    - "data/raw/ESSH1/cells/Cell#34.pkl"
+    - "data/raw/ESSH1/cells/Pack_field#1#cell#1.pkl"
+    - "data/raw/ESSH1/cells/Pack_field#1#cell#2.pkl"
+    - "data/raw/ESSH1/cells/Pack_field#1#cell#26.pkl"
+    - "data/raw/ESSH1/cells/Pack_field#1#cell#54.pkl"
+    - "data/raw/ESSH1/cells/Pack_field#1#cell#84.pkl"
+
+  pack_data_path: "data/raw/ESSH1/pack/Pack_field#1.pkl"
+
+# ============================================================
+# External labels
+# ============================================================
+
+labels:
+  real_pack_soh_source: external_pack_capacity
+
+  pack_capacity_path: "data/raw/ESSH1/labels/pack_capacity_#1.csv"
+  cell_capacity_path: "data/raw/ESSH1/labels/capacity_matrix_#1.csv"
+  soc_matrix_path: "data/raw/ESSH1/labels/SOC_matrix_#1.csv"
+
+  pack_capacity_column_start: 1
+  capacity_to_soh_divisor: 3.02
+
+# ============================================================
+# Column names
+# ============================================================
+
+columns:
+  time: "time(s)"
+  current: "current(A)"
+  charge_capacity: "charge_capacity(Ah)"
+  soc: "SOC"
+
+  cell_voltage: "voltage(V)"
+  cell_temperature: "temperature(℃)"
+
+  pack_voltage: "Vpack"
+
+  # ESSH1 pack columns are V1, V2, ..., V416 and T1, T2, ..., T416.
+  pack_cell_voltage_regex: "^V\\d+$"
+  pack_cell_temperature_prefix: "T"
+
+# ============================================================
+# Sampling settings
+# ============================================================
+
+sampling:
+  min_length: 50
+  filter_invalid_all: true
+
+  voltage:
+    min_v: 3.34
+    max_v: 3.42
+    step_v: 0.001
+    round_digits: 4
+
+  soc:
+    window_size: 30
+    num_samples: 20
+    pad_short_windows: false
+    unique_start_indices: false
+
+  soh:
+    window_size: 70
+    num_samples_mode: auto_from_voltage_range
+    pad_short_windows: true
+    unique_start_indices: false
+    time_transform: none
+
+  metadata:
+    dr_mode: essh1_recompute
+
+# ============================================================
+# Data split and dataloader
+# ============================================================
+
+split:
+  test_size: 0.20
+  random_state: 42
+  split_unit: cycle
+
+dataloader:
+  batch_size: 32
+  num_workers: 0
+  shuffle_train: true
+  shuffle_test: false
+
+# ============================================================
+# Model settings
+# ============================================================
+
+model:
+  name: DualCNNLSTMModel
+
+  soh:
+    input_channels: 4
+    seq_length: 70
+
+  soc:
+    input_channels: 2
+    seq_length: 30
+
+  hidden_dim: 8
+  aux_dim: 2
+  conv_dropout: 0.0
+
+  soh_aux_start: 6
+  soc_aux_start: 2
+
+# ============================================================
+# Training settings
+# ============================================================
+
+training:
+  seed: 42
+  device: auto
+  cuda_device: 0
+
+  num_epochs: 300
+  learning_rate: 0.01
+  weight_decay: 1.0e-5
+
+  optimizer: Adam
+
+  scheduler:
+    name: ReduceLROnPlateau
+    mode: min
+    factor: 0.5
+    patience: 5
+    min_lr: 1.0e-5
+    eps: 1.0e-8
+
+  early_stopping:
+    enabled: true
+    patience: 20
+
+# ============================================================
+# Physics-regularized loss weights
+# ============================================================
+
+loss:
+  criterion: MSELoss
+
+  weights:
+    soh: 0.45
+    soc: 0.35
+    soh_soc: 0.10
+    dr: 0.10
+
+  dr_mode: normalized_capacity_ratio
+  dr_target_scale: 302.0
+
+# ============================================================
+# Pack-level inference settings
+# ============================================================
+
+pack_inference:
+  batch_size: 100
+  require_full_batch: false
+
+  n_cells: 416
+
+  current_filter:
+    enabled: true
+    mode: negative_charge
+    min_current_a: 0.0
+    min_c_rate: null
+    flip_sign_after_filter: true
+
+  voltage_filter:
+    use_pack_voltage: true
+    use_cell_voltage: false
+    crop_to_voltage_window: true
+    min_v: 3.34
+    max_v: 3.42
+
+  temperature:
+    mode: paired
+    sort_numeric_suffix: true
+
+  sample_filter:
+    skip_all_nan_samples: false
+    check_lab_soc: true
+
+  abnormal_voltage_jump_filter:
+    enabled: false
+    max_cell_voltage_jump_v: 0.02
+
+  capacity_estimation:
+    method: boundary_min_charge_discharge
+    reduce_soh_windows: none
+    outlier_filter: iqr
+    iqr_multiplier: 1.5
+    soc_sample_index_for_state_space_plot: 19
+
+    soc_cleaning:
+      enabled: true
+      method: median_std
+      k: 1.0
+
+# ============================================================
+# Output paths
+# ============================================================
+
+output:
+  checkpoint_dir: "outputs/checkpoints"
+  prediction_dir: "outputs/predictions"
+  figure_dir: "outputs/figures"
+  table_dir: "outputs/tables"
+
+  best_model_name: "best_dual_cnn_lstm_model_essh1.pth"
+
+  cell_prediction_file: "outputs/predictions/essh1_cell_predictions.npz"
+  pack_prediction_file: "outputs/predictions/essh1_pack_predictions.npz"
+  pack_capacity_table: "outputs/tables/essh1_pack_estimation.csv"
+
+# ============================================================
+# Figure settings
+# ============================================================
+
+plot:
+  font_family: Arial
+  dpi: 300
+
+  save_figures: true
+  show_figures: false

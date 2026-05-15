@@ -1,0 +1,181 @@
+# ============================================================
+# Configuration for PBSL1 cell-to-pack evaluation
+# ============================================================
+
+project:
+  name: cell-to-pack-degradation
+  experiment_name: pbsl1_joint_soc_soh
+  description: Physics-regularized joint SOC/SOH estimation and pack-level capacity evaluation for PBSL1.
+
+dataset:
+  name: PBSL1
+  chemistry: NMC
+  nominal_capacity_ah: 4.0
+  pack_structure: 15
+  pack_structure_description: 15s
+
+  cell_data_paths:
+    - "data/raw/PBSL1/cells/Cell#25.pkl"
+    - "data/raw/PBSL1/cells/Cell#26.pkl"
+
+  pack_data_path: "data/raw/PBSL1/pack/Pack#3.pkl"
+
+columns:
+  time: "time(s)"
+  current: "current(A)"
+  charge_capacity: "charge_capacity(Ah)"
+  soc: "SOC"
+
+  cell_voltage: "voltage(V)"
+  cell_temperature: "temperature(℃)"
+
+  pack_voltage: "Vpack"
+
+  # PBSL1 pack columns are V1, V2, ..., V15 and T1.
+  pack_cell_voltage_regex: "^V\\d+$"
+  pack_cell_temperature_prefix: "T"
+
+sampling:
+  min_length: 60
+  filter_invalid_all: true
+
+  voltage:
+    min_v: 3.65
+    max_v: 4.05
+    step_v: 0.002
+    round_digits: 4
+
+  soc:
+    window_size: 28
+    num_samples: 20
+    pad_short_windows: true
+    unique_start_indices: true
+
+  soh:
+    window_size: 200
+    num_samples_mode: auto_from_voltage_range_plus_one
+    pad_short_windows: true
+    unique_start_indices: true
+    time_transform: none
+
+  cell_timeseries:
+    downsample_if_longer_than: 1000
+    downsample_stride: 10
+
+split:
+  test_size: 0.20
+  random_state: 42
+  split_unit: cycle
+
+dataloader:
+  batch_size: 16
+  num_workers: 0
+  shuffle_train: true
+  shuffle_test: false
+
+model:
+  name: DualCNNLSTMModel
+
+  soh:
+    input_channels: 4
+    seq_length: 200
+
+  soc:
+    input_channels: 2
+    seq_length: 28
+
+  hidden_dim: 8
+  aux_dim: 1
+  conv_dropout: 0.2
+
+  soh_aux_start: 7
+  soc_aux_start: 3
+
+training:
+  seed: 42
+  device: auto
+  cuda_device: 0
+
+  num_epochs: 300
+  learning_rate: 0.01
+  weight_decay: 1.0e-5
+
+  optimizer: Adam
+
+  scheduler:
+    name: ReduceLROnPlateau
+    mode: min
+    factor: 0.5
+    patience: 5
+    min_lr: 1.0e-5
+    eps: 1.0e-8
+
+  early_stopping:
+    enabled: true
+    patience: 10
+
+loss:
+  criterion: MSELoss
+
+  weights:
+    soh: 0.45
+    soc: 0.35
+    soh_soc: 0.10
+    dr: 0.10
+
+pack_inference:
+  batch_size: 100
+  require_full_batch: false
+
+  current_filter:
+    enabled: true
+    min_current_a: 4.0
+    min_c_rate: null
+
+  voltage_filter:
+    use_pack_voltage: false
+    use_cell_voltage: true
+    crop_to_voltage_window: false
+    min_v: 3.65
+    max_v: 4.05
+
+  pack_timeseries:
+    downsample_stride: 10
+
+  temperature:
+    mode: fixed
+    fixed_temperature_column: "T1"
+
+  sample_filter:
+    skip_all_nan_samples: false
+    check_lab_soc: false
+
+  abnormal_voltage_jump_filter:
+    enabled: false
+    max_cell_voltage_jump_v: 0.02
+
+  capacity_estimation:
+    method: boundary_min_charge_discharge
+    reduce_soh_windows: mean
+    outlier_filter: iqr
+    iqr_multiplier: 2.5
+    soc_sample_index_for_state_space_plot: 19
+
+output:
+  checkpoint_dir: "outputs/checkpoints"
+  prediction_dir: "outputs/predictions"
+  figure_dir: "outputs/figures"
+  table_dir: "outputs/tables"
+
+  best_model_name: "best_dual_cnn_lstm_model_pbsl1.pth"
+
+  cell_prediction_file: "outputs/predictions/pbsl1_cell_predictions.npz"
+  pack_prediction_file: "outputs/predictions/pbsl1_pack_predictions.npz"
+  pack_capacity_table: "outputs/tables/pbsl1_pack_estimation.csv"
+
+plot:
+  font_family: Arial
+  dpi: 300
+
+  save_figures: true
+  show_figures: false
