@@ -22,7 +22,7 @@ rcParams.update({
 # In[] Fig2(a)
 
 BASE_DIR = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-SOURCE_XLSX = BBASE_DIR.parent / "source_data" / "Fig2_source_data.xlsx"
+SOURCE_XLSX = BASE_DIR.parent / "source_data" / "Fig2_source_data.xlsx"
 
 df = pd.read_excel(SOURCE_XLSX, sheet_name="Fig2a")
 
