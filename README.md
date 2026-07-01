@@ -26,6 +26,13 @@ No non-standard hardware is required for setup checking and pack-level evaluatio
 
 ## II - Installation
 
+Clone the repository:
+
+```bash
+git clone https://github.com/BatICM/cell-to-pack-degradation.git
+cd cell-to-pack-degradation
+```
+
 Create and activate a Python environment:
 
 ```bash
@@ -36,9 +43,22 @@ pip install -r requirements.txt
 
 Typical installation time: approximately 5–10 min on a normal desktop computer with a stable internet connection.
 
-## III - Demo
+## III - Repository structure
 
-The ESSL1 dataset included in this repository is provided as a lightweight example.
+```text
+configs/              Configuration files for datasets and model settings
+data/                 Example data and local dataset directory
+scripts/              Main scripts for setup checking, training, inference and capacity estimation
+src/                  Source code for data processing, models, training and evaluation
+outputs/              Generated checkpoints, predictions, tables and figures
+requirements.txt      Python dependencies
+LICENSE               Software license
+README.md             Instructions for installation, demo and use
+```
+
+## IV - Demo
+
+The ESSL1 dataset included in this repository is provided as a lightweight example. The demo workflow includes setup checking, cell-level model training, pack-state inference, and pack-capacity estimation.
 
 Check the local setup:
 
@@ -64,9 +84,11 @@ Estimate pack capacity:
 python scripts/estimate_pack_capacity.py --config configs/essl1.yaml
 ```
 
-## IV - Expected output
+## V - Expected output
 
-After running the ESSL1 training workflow, the following files are generated:
+After running the ESSL1 demo workflow, generated files are saved under `outputs/`.
+
+The cell-level training script generates:
 
 ```text
 outputs/checkpoints/best_dual_cnn_lstm_model_essl1.pth
@@ -76,16 +98,25 @@ outputs/figures/essl1_training_loss.png
 outputs/figures/essl1_train_test_results.png
 ```
 
-If runtime logging is enabled, the following files are also generated:
+If runtime logging is enabled, it also generates:
 
 ```text
 outputs/predictions/essl1_runtime_summary.json
 outputs/predictions/essl1_runtime_summary.txt
 ```
 
-Generated files are saved under `outputs/`.
+The pack-state inference script generates the pack prediction file specified by `pack_prediction_file` in `configs/essl1.yaml`. This file contains predicted SOH/SOC states, real pack SOH labels, sample indices, and pack channel information.
 
-## V - Runtime
+The pack-capacity estimation script generates:
+
+```text
+outputs/predictions/essl1_pack_metrics.json
+outputs/figures/essl1_pack_estimation.png
+```
+
+It also saves the pack capacity estimation table to the path specified by `pack_capacity_table` in `configs/essl1.yaml`.
+
+## VI - Runtime
 
 The runtime below was measured using the lightweight ESSL1 example dataset included in this repository.
 
@@ -96,7 +127,7 @@ Runtime was measured on Windows 11 with an Intel Core i7-13700F CPU, 32 GB RAM, 
 
 Runtime may vary depending on hardware, software environment, dataset size, and configuration.
 
-## VI - Data
+## VII - Data
 
 The example data are stored in:
 
@@ -116,7 +147,7 @@ data/raw/
 
 Large datasets, trained checkpoints, and generated outputs are not tracked in GitHub.
 
-## VII - Running on custom data
+## VIII - Running on custom data
 
 To run the code on custom data, organize the input files following the same structure as the ESSL1 example dataset. Then update the corresponding configuration file in `configs/` and run the scripts with the new config file.
 
@@ -130,16 +161,22 @@ python scripts/estimate_pack_capacity.py --config configs/your_dataset.yaml
 
 The required input format can be checked from the ESSL1 example data and `configs/essl1.yaml`.
 
-## VIII - Troubleshooting
+## IX - Notes
+
+The ESSL1 dataset is provided as a lightweight example for checking the code workflow. Full-data reproduction requires downloading the complete datasets from Zenodo.
+
+Do not change the directory structure of the downloaded datasets unless the paths in the corresponding configuration files are also updated.
+
+## X - Troubleshooting
 
 If `check_setup.py` reports missing files, check whether the data paths in `configs/*.yaml` match the local file structure.
 
 If CUDA is unavailable, run the scripts on CPU or reduce the batch size in the configuration file.
 
-## IX - License
+## XI - License
 
 This project is released under the MIT License. See the `LICENSE` file for details.
 
-## X - Citation
+## XII - Citation
 
 Citation information will be added after publication.
