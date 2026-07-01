@@ -87,13 +87,12 @@ Generated files are saved under `outputs/`.
 
 ## V - Runtime
 
-The runtime below was measured using the ESSL1 example dataset.
+The runtime below was measured using the lightweight ESSL1 example dataset included in this repository.
 
-```text
-Cell-level model training and evaluation: approximately 5.2 min
-```
+- Cell-level model training and evaluation: approximately 5.2 min
+- Other demo steps, including setup checking, pack-state inference and pack-capacity estimation: <1 min each
 
-The recorded ESSL1 run used 2639 loaded cycles, 2635 valid processed cycles, 2108 training cycles, 527 test cycles, batch size 16, and early stopping after 187 epochs.
+Runtime was measured on Windows 11 with an Intel Core i7-13700F CPU, 32 GB RAM, and an NVIDIA GeForce RTX 3070 GPU with 8 GB memory.
 
 Runtime may vary depending on hardware, software environment, dataset size, and configuration.
 
