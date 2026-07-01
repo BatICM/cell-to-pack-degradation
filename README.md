@@ -1,14 +1,28 @@
 # cell-to-pack-degradation
 
-Data and code to reproduce the analyses in the manuscript **Resolving inter-cell heterogeneity to mitigate degradation amplification in battery packs**.
+Data and code for the manuscript **Resolving inter-cell heterogeneity to mitigate degradation amplification in battery packs**.
 
-The repository includes the ESSL1 dataset as a lightweight example. The complete datasets are available at Zenodo: 10.5281/zenodo.20132842.
+This repository provides the source code, configuration files, and a lightweight ESSL1 example dataset for running the main cell-to-pack degradation workflow. The complete datasets are available at Zenodo:
+
+```text
+https://doi.org/10.5281/zenodo.20132842
+```
 
 ## I - System requirements
 
 All analyses are conducted in Python. Required packages are listed in `requirements.txt`.
 
-The code has been tested with Python 3.7.12. No non-standard hardware is required for the ESSL1 example. GPU acceleration can be used for model training but is not required for setup checking or pack-level evaluation.
+Tested environment:
+
+- OS: Windows 11
+- CPU: 13th Gen Intel(R) Core(TM) i7-13700F
+- RAM: 32 GB
+- GPU: NVIDIA GeForce RTX 3070, 8 GB
+- Python: 3.7.12
+- PyTorch: 1.13.1+cu117
+- CUDA: 11.7
+
+No non-standard hardware is required for setup checking and pack-level evaluation. A CUDA-enabled GPU is optional for model training and was used for the runtime reported below.
 
 ## II - Installation
 
@@ -19,9 +33,12 @@ conda create -n ctp_deg python=3.7
 conda activate ctp_deg
 pip install -r requirements.txt
 ```
-Typical installation time: ~5–10 min on a normal desktop computer
 
-## III - Demos and instructions
+Typical installation time: approximately 5–10 min on a normal desktop computer with a stable internet connection.
+
+## III - Demo
+
+The ESSL1 dataset included in this repository is provided as a lightweight example.
 
 Check the local setup:
 
@@ -47,9 +64,40 @@ Estimate pack capacity:
 python scripts/estimate_pack_capacity.py --config configs/essl1.yaml
 ```
 
+## IV - Expected output
+
+After running the ESSL1 training workflow, the following files are generated:
+
+```text
+outputs/checkpoints/best_dual_cnn_lstm_model_essl1.pth
+outputs/predictions/essl1_training_summary.pkl
+outputs/predictions/essl1_cell_predictions.npz
+outputs/figures/essl1_training_loss.png
+outputs/figures/essl1_train_test_results.png
+```
+
+If runtime logging is enabled, the following files are also generated:
+
+```text
+outputs/predictions/essl1_runtime_summary.json
+outputs/predictions/essl1_runtime_summary.txt
+```
+
 Generated files are saved under `outputs/`.
 
-## IV - Data
+## V - Runtime
+
+The runtime below was measured using the ESSL1 example dataset.
+
+```text
+Cell-level model training and evaluation: approximately 5.2 min
+```
+
+The recorded ESSL1 run used 2639 loaded cycles, 2635 valid processed cycles, 2108 training cycles, 527 test cycles, batch size 16, and early stopping after 187 epochs.
+
+Runtime may vary depending on hardware, software environment, dataset size, and configuration.
+
+## VI - Data
 
 The example data are stored in:
 
@@ -57,7 +105,7 @@ The example data are stored in:
 data/raw/ESSL1/
 ```
 
-For full-data reproduction, place the complete datasets under:
+For full-data reproduction, download the complete datasets from Zenodo and place them under:
 
 ```text
 data/raw/
@@ -69,12 +117,30 @@ data/raw/
 
 Large datasets, trained checkpoints, and generated outputs are not tracked in GitHub.
 
-## V - Troubleshooting
+## VII - Running on custom data
+
+To run the code on custom data, organize the input files following the same structure as the ESSL1 example dataset. Then update the corresponding configuration file in `configs/` and run the scripts with the new config file.
+
+Example:
+
+```bash
+python scripts/train_cell_model.py --config configs/your_dataset.yaml
+python scripts/infer_pack_states.py --config configs/your_dataset.yaml
+python scripts/estimate_pack_capacity.py --config configs/your_dataset.yaml
+```
+
+The required input format can be checked from the ESSL1 example data and `configs/essl1.yaml`.
+
+## VIII - Troubleshooting
 
 If `check_setup.py` reports missing files, check whether the data paths in `configs/*.yaml` match the local file structure.
 
 If CUDA is unavailable, run the scripts on CPU or reduce the batch size in the configuration file.
 
-## Citation
+## IX - License
+
+This project is released under the MIT License. See the `LICENSE` file for details.
+
+## X - Citation
 
 Citation information will be added after publication.
