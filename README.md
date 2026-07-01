@@ -7,6 +7,7 @@ This repository provides the source code, configuration files, and a lightweight
 ```text
 https://doi.org/10.5281/zenodo.20132842
 ```
+A model card is provided in [MODEL_CARD.md](MODEL_CARD.md). It describes the intended use, model architecture, inputs and outputs, training data, data splitting strategy, evaluation metrics, limitations, out-of-scope uses, and ethical considerations for the proposed cell-to-pack degradation analysis model.
 
 ## I - System requirements
 
@@ -54,6 +55,7 @@ outputs/              Generated checkpoints, predictions, tables and figures
 requirements.txt      Python dependencies
 LICENSE               Software license
 README.md             Instructions for installation, demo and use
+Model_Card.md         Model card describing intended use, architecture, data, evaluation and limitations
 ```
 
 ## IV - Demo
@@ -180,3 +182,4 @@ This project is released under the MIT License. See the `LICENSE` file for detai
 ## XII - Citation
 
 Citation information will be added after publication.
+
