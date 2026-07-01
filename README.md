@@ -2,7 +2,7 @@
 
 Data and code to reproduce the analyses in the manuscript **Resolving inter-cell heterogeneity to mitigate degradation amplification in battery packs**.
 
-The repository includes the ESSL1 dataset as a lightweight example. The complete datasets will be available at Zenodo: 10.5281/zenodo.20132842.
+The repository includes the ESSL1 dataset as a lightweight example. The complete datasets are available at Zenodo: 10.5281/zenodo.20132842.
 
 ## I - System requirements
 
@@ -19,6 +19,7 @@ conda create -n ctp_deg python=3.7
 conda activate ctp_deg
 pip install -r requirements.txt
 ```
+Typical installation time: ~5–10 min on a normal desktop computer
 
 ## III - Demos and instructions
 
