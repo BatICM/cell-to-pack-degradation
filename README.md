@@ -52,7 +52,7 @@ outputs/              Generated checkpoints, predictions, tables and figures
 requirements.txt      Python dependencies
 LICENSE               Software license
 README.md             Instructions for installation, demo and use
-Model_Card.md         Model card describing intended use, architecture, data, evaluation and limitations
+MODEL_CARD.md         Model card describing intended use, architecture, data, evaluation and limitations
 ```
 
 ## IV - Demo
