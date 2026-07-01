@@ -2,7 +2,7 @@
 
 Data and code for the manuscript **Resolving inter-cell heterogeneity to mitigate degradation amplification in battery packs**.
 
-This repository provides the source code, configuration files, and a lightweight ESSL1 example dataset for running the main cell-to-pack degradation workflow. The complete datasets are available at Zenodo: [https://doi.org/10.5281/zenodo.20132842](https://doi.org/10.5281/zenodo.20132842)
+This repository provides the source code, configuration files, and a lightweight ESSL1 example dataset for running the main cell-to-pack degradation workflow. The complete datasets are available at Zenodo: [https://doi.org/10.5281/zenodo.20132842](https://doi.org/10.5281/zenodo.21105057)
 
 A model card is provided in [MODEL_CARD.md](MODEL_CARD.md). It describes the intended use, model architecture, inputs and outputs, training data, data splitting strategy, evaluation metrics, limitations, out-of-scope uses, and ethical considerations for the proposed cell-to-pack degradation analysis model.
 
