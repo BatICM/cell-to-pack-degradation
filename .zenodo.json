@@ -1,0 +1,57 @@
+{
+  "title": "Code for: Resolving inter-cell heterogeneity to mitigate degradation amplification in battery packs",
+  "upload_type": "software",
+  "description": "Source code and lightweight example data for reproducing the analyses in the manuscript Resolving inter-cell heterogeneity to mitigate degradation amplification in battery packs.",
+  "creators": [
+    {
+      "name": "He, Yvxin",
+      "affiliation": "University of Electronic Science and Technology of China"
+    },
+    {
+      "name": "Deng, Zhongwei",
+      "affiliation": "University of Electronic Science and Technology of China",
+      "orcid": "https://orcid.org/0000-0002-5834-1583"
+    },
+    {
+      "name": "Huang, Hong-Zhong",
+      "affiliation": "University of Electronic Science and Technology of China"
+    },
+    {
+      "name": "Liu, Yu",
+      "affiliation": "University of Electronic Science and Technology of China"
+    },
+    {
+      "name": "Busch, Paul Albert",
+      "affiliation": "RWTH Aachen University"
+    },
+    {
+      "name": "Tang, Xiaolin",
+      "affiliation": "Chongqing University"
+    },
+    {
+      "name": "Hu, Xiaosong",
+      "affiliation": "Chongqing University"
+    },
+    {
+      "name": "Li, Weihan",
+      "affiliation": "RWTH Aachen University"
+    }
+  ],
+  "license": "MIT",
+  "version": "v1.0.0",
+  "keywords": [
+    "lithium-ion batteries",
+    "battery packs",
+    "state of health",
+    "cell-to-pack degradation",
+    "inter-cell heterogeneity",
+    "battery health management"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.20132842",
+      "relation": "isSupplementTo",
+      "scheme": "doi"
+    }
+  ]
+}
