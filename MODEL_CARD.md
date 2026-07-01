@@ -115,7 +115,7 @@ The model is trained using in-house cell-level lithium-ion battery aging data.
 The repository includes the ESSL1 dataset as a lightweight example. The complete datasets are available at Zenodo:
 
 ```text
-https://doi.org/10.5281/zenodo.20132842
+[https://doi.org/10.5281/zenodo.20132842](https://doi.org/10.5281/zenodo.21105057)
 ```
 
 The full dataset includes multiple cell-pack pairs, chemistries, capacities, pack configurations, and operating scenarios.
